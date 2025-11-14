@@ -1,11 +1,16 @@
-// src/app/blog/[slug]/page.tsx
 import { Post } from '@/lib/types';
 import { notFound } from 'next/navigation';
+
+// This is the API_URL for server components
+const API_URL = process.env.API_URL;
 
 // Data Fetching Function
 async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL;
+    // We check for API_URL
+    if (!API_URL) {
+      throw new Error("API_URL is not defined");
+    }
     const res = await fetch(`${API_URL}/posts/${slug}`, {
       cache: 'no-store', // Always fetch fresh data
     });
@@ -23,6 +28,8 @@ async function getPostBySlug(slug: string): Promise<Post | null> {
   }
 }
 
+// --- THIS IS THE FIX ---
+// We removed the custom 'SinglePostPageProps' type
 export default async function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const post = await getPostBySlug(slug);
@@ -45,9 +52,14 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <h1 className="text-5xl font-extrabold text-white text-center mb-6">
           {post.title}
         </h1>
+        
+        {/* --- THIS IS THE FIX --- */}
+        {/* We must check if post.author exists before using it */}
         <p className="text-center text-light/70 mb-10">
-          Posted by {post.author.email} on {postDate}
+          {post.author ? `Posted by ${post.author.email} on ` : 'Posted on '}
+          {postDate}
         </p>
+
         {/* Post Content */}
         <div className="text-lg text-light/70 leading-relaxed space-y-6">
           <p>{post.content}</p>
