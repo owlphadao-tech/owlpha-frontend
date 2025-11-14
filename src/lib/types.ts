@@ -1,21 +1,16 @@
-// src/lib/types.ts
-export type HeroContent = {
-  title: string;
-  subtitle: string;
-};
-
-export type AboutSectionContent = {
-  title: string;
-  text: string;
-};
-
 // This matches the JSON `content` blob in your PageContent model
 export type HomePageContent = {
-  hero: HeroContent;
-  aboutSection: AboutSectionContent;
+  hero: {
+    title: string;
+    subtitle: string;
+  };
+  aboutSection: {
+    title: string;
+    text: string;
+  };
 };
 
-// NEW: Define the shape of the "About" page's static content
+// This is the new, more complex type for the About page's static content
 export type AboutPageStaticContent = {
   header: {
     title: string;
@@ -31,15 +26,17 @@ export type AboutPageStaticContent = {
   };
 };
 
-// This matches the full API response from /api/pages/:slug
+// This is a generic API response type.
+// We can use it for <HomePageContent> or <AboutPageStaticContent>
 export type PageContentAPIResponse<T> = {
   id: string;
   pageSlug: string;
-  content: T; // This is now a generic type
+  content: T; // The flexible JSON content
   updatedAt: string;
 };
 
 // --- Blog Types ---
+
 export type PostAuthor = {
   id: string;
   email: string;
@@ -49,82 +46,57 @@ export type Post = {
   id: string;
   title: string;
   slug: string;
-  content: string;
+  content: string; // The full post content
   published: boolean;
-  createdAt: string;
+  createdAt: string; // This will be an ISO date string
   updatedAt: string;
   authorId: string;
-  author?: PostAuthor;
+  author?: PostAuthor; // Author is optional
 };
 
-// --- Roadmap Types ---
-export type MilestoneStatus = 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED';
+// --- Site Stats Types ---
 
-export type RoadmapMilestone = {
-  id: string;
-  title: string;
-  description: string;
-  status: MilestoneStatus;
-  date: string;
-  createdAt: string;
-};
-
-// --- Partner Types ---
-export type Partner = {
-  id: string;
-  name: string;
-  logoUrl: string;
-  websiteUrl: string | null;
-  description: string | null;
-  order: number;
-};
-
-// --- Stats Types ---
 export type SiteStats = {
+  // We removed totalNftStaked because the API call was failing
   totalAdcSupply: number;
   collectionCount: number;
 };
 
-// --- NEW: About Page Dynamic Types ---
+// --- "About" Page Dynamic Content Types ---
 
-// For the "People Behind the DAO" section
 export type TeamMember = {
   id: string;
   name: string;
-  role: string; // e.g., "Core Developer", "Community Lead"
-  imageUrl: string | null;
+  role: string;
   bio: string | null;
+  imageUrl: string | null;
+  // videoUrl has been REMOVED
   twitterUrl: string | null;
-  linkedinUrl: string | null;
   order: number;
 };
 
-// For the "Mission, Vision, and Values" cards
-export type MvvType = 'MISSION' | 'VISION' | 'VALUE';
-
 export type MissionVisionValue = {
   id: string;
-  type: MvvType;
+  type: 'MISSION' | 'VISION' | 'VALUE';
   title: string;
   description: string;
-  icon: string | null;
+  icon: string;
 };
 
-// For the "Ecosystem Snapshot" (INTERNAL projects)
 export type EcosystemProject = {
   id: string;
   name: string;
   description: string;
-  icon: string | null;
   url: string | null;
+  icon: string | null;
 };
 
-// For the "Community" page resource links
+// --- "Community" Page Dynamic Content Types ---
+
 export type CommunityLink = {
   id: string;
   title: string;
-  description: string | null;
+  description: string;
   url: string;
-  icon: string | null;
-  order: number;
+  icon: string;
 };

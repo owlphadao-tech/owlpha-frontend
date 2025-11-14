@@ -15,7 +15,6 @@ async function getPostBySlug(slug: string): Promise<Post | null> {
       cache: 'no-store', // Always fetch fresh data
     });
     if (!res.ok) {
-      // If status is 404, our API couldn't find the post
       if (res.status === 404) {
         return null;
       }
@@ -29,7 +28,7 @@ async function getPostBySlug(slug: string): Promise<Post | null> {
 }
 
 // --- THIS IS THE FIX ---
-// We removed the custom 'SinglePostPageProps' type
+// We are REMOVING 'SinglePostPageProps' and defining the type inline
 export default async function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const post = await getPostBySlug(slug);
@@ -53,7 +52,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
           {post.title}
         </h1>
         
-        {/* --- THIS IS THE FIX --- */}
         {/* We must check if post.author exists before using it */}
         <p className="text-center text-light/70 mb-10">
           {post.author ? `Posted by ${post.author.email} on ` : 'Posted on '}
