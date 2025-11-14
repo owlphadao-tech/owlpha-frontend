@@ -13,7 +13,6 @@ import {
   AboutPageStaticContent
 } from '@/lib/types';
 
-// --- THIS IS THE FIX ---
 // Client components MUST use NEXT_PUBLIC_
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

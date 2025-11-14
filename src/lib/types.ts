@@ -8,9 +8,10 @@ export type HomePageContent = {
     title: string;
     text: string;
   };
+  // We can add more sections here as needed
 };
 
-// This is the new, more complex type for the About page's static content
+// --- ABOUT PAGE STATIC CONTENT ---
 export type AboutPageStaticContent = {
   header: {
     title: string;
@@ -26,8 +27,7 @@ export type AboutPageStaticContent = {
   };
 };
 
-// This is a generic API response type.
-// We can use it for <HomePageContent> or <AboutPageStaticContent>
+// Generic API response for PageContent
 export type PageContentAPIResponse<T> = {
   id: string;
   pageSlug: string;
@@ -35,8 +35,7 @@ export type PageContentAPIResponse<T> = {
   updatedAt: string;
 };
 
-// --- Blog Types ---
-
+// --- BLOG ---
 export type PostAuthor = {
   id: string;
   email: string;
@@ -46,23 +45,43 @@ export type Post = {
   id: string;
   title: string;
   slug: string;
-  content: string; // The full post content
+  content: string;
   published: boolean;
-  createdAt: string; // This will be an ISO date string
+  createdAt: string;
   updatedAt: string;
   authorId: string;
-  author?: PostAuthor; // Author is optional
+  author?: PostAuthor; // Made optional to prevent crashes
 };
 
-// --- Site Stats Types ---
-
+// --- STATS ---
 export type SiteStats = {
-  // We removed totalNftStaked because the API call was failing
   totalAdcSupply: number;
   collectionCount: number;
 };
 
-// --- "About" Page Dynamic Content Types ---
+// --- ROADMAP ---
+export type MilestoneStatus = 'PLANNED' | 'IN_PROGRESS' | 'COMPLETED';
+
+export type RoadmapMilestone = {
+  id: string;
+  title: string;
+  description: string;
+  status: MilestoneStatus;
+  date: string;
+  createdAt: string;
+};
+
+// --- PARTNERS (External) ---
+export type Partner = {
+  id: string;
+  name: string;
+  logoUrl: string;
+  websiteUrl: string | null;
+  description: string | null;
+  order: number;
+};
+
+// --- NEW "ABOUT" PAGE MODELS ---
 
 export type TeamMember = {
   id: string;
@@ -70,7 +89,7 @@ export type TeamMember = {
   role: string;
   bio: string | null;
   imageUrl: string | null;
-  // videoUrl has been REMOVED
+  // videoUrl is removed
   twitterUrl: string | null;
   order: number;
 };
@@ -91,12 +110,10 @@ export type EcosystemProject = {
   icon: string | null;
 };
 
-// --- "Community" Page Dynamic Content Types ---
-
 export type CommunityLink = {
   id: string;
   title: string;
   description: string;
   url: string;
-  icon: string;
+  icon: string | null;
 };
