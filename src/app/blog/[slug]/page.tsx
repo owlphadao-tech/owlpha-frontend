@@ -4,11 +4,6 @@ import { notFound } from 'next/navigation';
 
 // --- This component's props are passed by Next.js ---
 // The 'params' object contains the dynamic parts of the URL
-type SinglePostPageProps = {
-  params: {
-    slug: string;
-  };
-};
 
 // --- Data Fetching Function ---
 // We fetch one post from our API using its slug
@@ -36,7 +31,7 @@ async function getPostBySlug(slug: string): Promise<Post | null> {
 
 
 // --- The Page Component ---
-export default async function SinglePostPage({ params }: SinglePostPageProps) {
+export default async function Page({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const post = await getPostBySlug(slug);
 
