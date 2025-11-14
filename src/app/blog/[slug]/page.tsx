@@ -1,7 +1,7 @@
 import { Post } from '@/lib/types';
 import { notFound } from 'next/navigation';
 
-// This is the API_URL for server components
+// This is the API_URL for server components, read from Vercel env
 const API_URL = process.env.API_URL;
 
 // Data Fetching Function
@@ -9,7 +9,7 @@ async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
     // We check for API_URL
     if (!API_URL) {
-      throw new Error("API_URL is not defined");
+      throw new Error("API_URL is not defined in server environment");
     }
     const res = await fetch(`${API_URL}/posts/${slug}`, {
       cache: 'no-store', // Always fetch fresh data
@@ -60,7 +60,8 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
         {/* Post Content */}
         <div className="text-lg text-light/70 leading-relaxed space-y-6">
-          <p>{post.content}</p>
+          {/* Use whitespace-pre-wrap to respect newlines in the content */}
+          <p className="whitespace-pre-wrap">{post.content}</p>
         </div>
       </article>
     </main>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Rocket, Eye, Heart, Brain, Users, Award } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from 'next/image'; // Import Image
 import { 
   TeamMember, 
   MissionVisionValue, 
@@ -13,6 +13,7 @@ import {
   AboutPageStaticContent
 } from '@/lib/types';
 
+// --- THIS IS THE FIX ---
 // Client components MUST use NEXT_PUBLIC_
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -31,6 +32,13 @@ function useAboutData<T>(endpoint: string) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Check if API_URL is defined
+    if (!API_URL) {
+      setError("API URL is not configured.");
+      setIsLoading(false);
+      return;
+    }
+    
     const fetchData = async () => {
       try {
         const res = await fetch(`${API_URL}${endpoint}`);
@@ -50,9 +58,7 @@ function useAboutData<T>(endpoint: string) {
         setIsLoading(false);
       }
     };
-    if (API_URL) {
-      fetchData();
-    }
+    fetchData();
   }, [endpoint]);
 
   return { data, isLoading, error };
@@ -62,6 +68,11 @@ function useAboutData<T>(endpoint: string) {
 function useStaticContent() {
   const [data, setData] = useState<AboutPageStaticContent | null>(null);
   useEffect(() => {
+    // Check if API_URL is defined
+    if (!API_URL) {
+      return;
+    }
+
     const fetchStatic = async () => {
       try {
         const res = await fetch(`${API_URL}/pages/about`);
@@ -73,9 +84,7 @@ function useStaticContent() {
         console.error("Failed to fetch static content", e);
       }
     };
-    if (API_URL) {
-      fetchStatic();
-    }
+    fetchStatic();
   }, []);
   return data;
 }
@@ -108,8 +117,8 @@ const MvvCard: React.FC<{ item: MissionVisionValue }> = ({ item }) => {
 
 const TeamCard: React.FC<{ member: TeamMember }> = ({ member }) => (
   <div className="bg-secondary p-6 rounded-xl border border-secondary text-center">
-    {/* --- THIS IS THE FIX (REMOVED VIDEO LOGIC) --- */}
     <div className="w-24 h-24 rounded-full bg-dark mx-auto mb-4 flex items-center justify-center overflow-hidden">
+      {/* --- This is the fix (no video) --- */}
       {member.imageUrl ? (
         <Image
           src={member.imageUrl}
@@ -127,7 +136,7 @@ const TeamCard: React.FC<{ member: TeamMember }> = ({ member }) => (
     <p className="text-light/70 text-sm mb-4">{member.bio}</p>
     {member.twitterUrl && (
       <a 
-        href={member.twitterUrl || undefined} 
+        href={member.twitterUrl || undefined} // 👈 This is the TS fix
         target="_blank" 
         rel="noopener noreferrer"
         className="text-light/70 hover:text-primary transition-colors"
@@ -140,7 +149,7 @@ const TeamCard: React.FC<{ member: TeamMember }> = ({ member }) => (
 
 const EcoCard: React.FC<{ project: EcosystemProject }> = ({ project }) => (
   <a 
-    href={project.url || undefined} 
+    href={project.url || undefined} // 👈 This is a TS fix 
     target="_blank" 
     rel="noopener noreferrer"
     className="block bg-secondary p-6 rounded-xl border border-secondary hover:border-primary transition-all duration-200"
@@ -155,7 +164,7 @@ const EcoCard: React.FC<{ project: EcosystemProject }> = ({ project }) => (
 export default function AboutPage() {
   const staticContent = useStaticContent();
   const { data: mvvItems } = useAboutData<MissionVisionValue[]>('/content/mvv');
-  const { data: teamMembers } = useAboutData<TeamMember[]>('/team/all');
+  const { data: teamMembers } = useAboutData<TeamMember[]>('/team/all'); // Use /team/all
   const { data: ecoProjects } = useAboutData<EcosystemProject[]>('/content/ecosystem-projects');
 
   return (
@@ -238,10 +247,10 @@ export default function AboutPage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
               {staticContent.governance.title || 'Governance & Structure'}
             </h2>
+            {/* --- THIS IS THE TYPO FIX --- */}
             <p className="text-base md:text-lg text-light/70 leading-relaxed max-w-3xl mx-auto">
               {staticContent.governance.text || 'Our governance structure is...'}
-            </p> 
-            {/* --- THIS IS THE FIX (was </img) --- */}
+            </p>
           </div>
         </Section>
       )}
