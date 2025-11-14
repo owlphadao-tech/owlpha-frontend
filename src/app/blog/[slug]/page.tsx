@@ -1,3 +1,4 @@
+// --- FINAL VERCEL FIX v1 ---
 import { Post } from '@/lib/types';
 import { notFound } from 'next/navigation';
 
